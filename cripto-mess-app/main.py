@@ -19,7 +19,7 @@ class CryptoMessApp:
 
         self.build_mode_selection()
 
-    # --- Mode selection ---
+    # Mode selection
     def build_mode_selection(self):
         for widget in self.root.winfo_children():
             widget.destroy()
@@ -32,14 +32,14 @@ class CryptoMessApp:
         tk.Button(frame, text="Run as Server", width=20, command=self.start_server).pack(pady=5)
         tk.Button(frame, text="Run as Client", width=20, command=self.build_client_login).pack(pady=5)
 
-    # --- Server ---
+    # Server
     def start_server(self):
         self.mode = "server"
         self.onlineUsers = [{"name": "Client_001", "csidhPublicKey": generateCSIDHKeys()["publicKey"]}]
         self.build_chat_interface()
         self.perform_key_exchange(self.onlineUsers[0])
 
-    # --- Client login ---
+    # Client login
     def build_client_login(self):
         self.mode = "client"
         for widget in self.root.winfo_children():
@@ -79,7 +79,7 @@ class CryptoMessApp:
         self.build_chat_interface()
         self.perform_key_exchange(self.onlineUsers[0])
 
-    # --- Chat interface ---
+    # Chat interface
     def build_chat_interface(self):
         for widget in self.root.winfo_children():
             widget.destroy()
@@ -95,14 +95,14 @@ class CryptoMessApp:
 
         tk.Button(self.root, text="Send", command=self.send_message).pack(side="left", padx=5)
 
-    # --- Key Exchange Simulation ---
+    # Key Exchange Simulation
     def perform_key_exchange(self, user):
         self.add_system_message(f"Starting key exchange with {user['name']}...")
         self.sharedSecret = computeCSIDHSharedSecret(self.csidhKeys["privateKey"], user["csidhPublicKey"])
         self.keyExchangeCompleted = True
         self.add_system_message(f"Shared secret established: {self.sharedSecret[:16]}...")
 
-    # --- Send message ---
+    # Send message
     def send_message(self):
         if not self.keyExchangeCompleted:
             self.add_system_message("Key exchange not completed yet!")
@@ -124,7 +124,7 @@ class CryptoMessApp:
             f"Received: {msg}", aes256Encrypt(f"Received: {msg}", self.sharedSecret), rainbowSign(f"Received: {msg}", self.csidhKeys["privateKey"])
         ))
 
-    # --- Display messages ---
+    # Display messages
     def add_message(self, sender, msg, encrypted, signature):
         self.chatDisplay.config(state="normal")
         self.chatDisplay.insert("end", f"{sender}: {msg}\n")
@@ -139,8 +139,8 @@ class CryptoMessApp:
         self.chatDisplay.config(state="disabled")
         self.chatDisplay.yview("end")
 
-# --- Run app ---
 if __name__ == "__main__":
     root = tk.Tk()
     app = CryptoMessApp(root)
     root.mainloop()
+
